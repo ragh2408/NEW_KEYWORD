@@ -11,9 +11,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.ils.genericmethods.Generic_Methods;
+import com.opera.core.systems.scope.protos.SelftestProtos.SelftestResult.Result;
 
 public class Driver_Excel {
-
+	static boolean result;
 	public static void main(String[] args) throws InvalidFormatException, IOException {
 
 		String current_path = System.getProperty("user.dir");
@@ -29,10 +30,16 @@ public class Driver_Excel {
 				String EXL_NAME = sheet.getRow(i).getCell(1).getStringCellValue();
 
 				System.out.println("Now we are going to work on Excel ----->>>>" + EXL_NAME);
-				
+				result=false;
 				
 				try {
 					Test_Cases.Web_call(EXL_NAME);
+					
+					//result=Test_Cases.status_flag;
+					result =Test_Cases.status_flag;
+					
+					System.out.println("---result---- " + result);
+					
 				} catch (InterruptedException e) {
 					sheet.getRow(i).createCell(2).setCellValue("FAILED");
 					sheet.getRow(i).getCell(2).setCellStyle(Generic_Methods.failobj(excelbook));
@@ -40,8 +47,17 @@ public class Driver_Excel {
 					
 				}
 				
-				sheet.getRow(i).createCell(2).setCellValue("EXECUTED");
-				sheet.getRow(i).getCell(2).setCellStyle(Generic_Methods.passobj(excelbook));
+			
+				if (result==true) {
+					sheet.getRow(i).createCell(2).setCellValue("Failed");
+					sheet.getRow(i).getCell(2).setCellStyle(Generic_Methods.failobj(excelbook));
+						
+				}
+				else {
+					sheet.getRow(i).createCell(2).setCellValue("Passed");
+					sheet.getRow(i).getCell(2).setCellStyle(Generic_Methods.passobj(excelbook));
+					
+				}
 				FileOutputStream fos = new FileOutputStream(Excel_File);
 				excelbook.write(fos);
 

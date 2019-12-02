@@ -42,6 +42,8 @@ public class Test_Cases extends Generic_Methods {
 	static String FI= "https://ess-f0-f-1-alb-995328410.us-east-1.elb.amazonaws.com/fi/ess-backend/";
 	static String fn_env = null;
 	static String Browsername = "CH";
+	static boolean status_flag =false;
+	
 	
 	public Test_Cases() throws IOException {
 		super();
@@ -51,6 +53,7 @@ public class Test_Cases extends Generic_Methods {
 		
 	public static void Web_call(String Exl_Name) throws InvalidFormatException, IOException, InterruptedException
 	{
+		status_flag =false;
 		String[][] varArray = new String[200][2];
 		String varEnv = null;
 		WebElement elementVar = null;
@@ -135,185 +138,7 @@ public class Test_Cases extends Generic_Methods {
 					System.out.println("Get Text value is -" + getstr);
 					break;
 					
-	//Raghav- I have commented out below code as code is not correct.				
-				
-/*				case "Join":
-					used to create a variable that can store a string or concatenate strings  
-					 * and other variables using the "|" as a delimiter (variable names will 
-					 * be prefixed with ^ to indicate they are variables) creating variable value    
-					 * 			  			  
-					 * Spreadsheet format:
-					 * Run	Action		Locator				Value
-					 * y	Join		variable name	 	string or string|^variable...
-					 * y	Join		codeRollRespVar		r|^codeRollDodaac
-					 * Var	N			N					Y
-					 
-					String varValue = ""; 
-					String varName = Locator;
-					
-					//Check for concatenation character "|" in inputString
-					if(Value.indexOf("|")>-1) {
-						//Steps concatenation
-						//System.out.println("Concat Req'd");
-						
-						String workingStr = Value;
-						
-						//Using regex patternString escaped by "\\Q" for the regex meta "|" followed by "\\E"  
-						String patternString = "\\Q|\\E";
-						Pattern pattern = Pattern.compile(patternString);
-						String[] strParts = pattern.split(workingStr);
-						
-						int m = strParts.length;
-						i = 0;
-						Value = "";
-						
-						//Work individual parts of the string
-						while (i < m) {
-							
-							if (strParts[i].substring(0,1).contentEquals("^")) {
-								//strPart is a variable (starts with "^") so lookup variable and append
-							
-								varName = strParts[i].substring(1, strParts[i].length());
-								
-								Value = Value + LookupVar(varName,varArray,varEnv);
-							} else {
-								//strPart is not a variable so append it
-								Value = Value + strParts[i];
-							}
-							
-							i = i + 1;
-							
-							varValue = Value;
-						}
-						
-					} else {
-					   //Steps for no concatenation
-					   //System.out.println("No Concat Req'd");
-						varValue = Value;
-						
-					}
-
-					//Call SaveVar to store data
-					SaveVar(varName,varValue, varArray);
-
-					
-					break;
-					
-				case "ReCheck":
-					Used for regular expression check to validate information reflected on a web 
-					 * element 
-					 * 			  			  
-					 * Spreadsheet format:
-					 * Run	Action		Locator				Value
-					 * y	ReCheck		attribute:value		String to use for Check
-					 * y	ReCheck		html id:content		[0-9]{3}0001REJ INPUT COLUMNS WITH X BELOW ARE INVALID - INITIATOR                   SD: 01 DATE [0-9]{5} TIME [0-9]{4}    000000 TR NR [0 ]{5} NGV431
-					 * Var	N			N:Y				 	Y
-					 
-					//insert  steps
-
-					
-					//Parse locator and value from searchName
-					String[] LocatorArray  = Locator.split("#", 2);
-					
-					String locator = LocatorArray[0];
-					String locatorVal = LocatorArray[1];
-					
-					//Lookup variable if first position is "^" for locatorVal
-					if (locatorVal.substring(0,1).contentEquals("^")) {
-						//strPart is a variable (starts with "^") so lookup variable and return
-					
-						varName = locatorVal.substring(1, locatorVal.length());
-						
-						locatorVal = LookupVar(varName,varArray,varEnv);
-					}
-					
-					//Set page element based on locator and locatorVal
-					elementVar = FindWebElement(driver, locator, locatorVal);
-					
-					String valText = elementVar.getText();
-					
-					//Replace line separators in valText
-					valText = valText.replaceAll("\\r\\n|\\r|\\n", "");
-					//System.out.println(valText);
-					
-					
-					//Lookup variable if first position is "^" for inputString
-					if (Value.substring(0,1).contentEquals("^")) {
-						//strPart is a variable (starts with "^") so lookup variable and return
-					
-						varName = Value.substring(1, Value.length());
-						
-						Value = LookupVar(varName,varArray,varEnv);
-					}
-					
-					//Add .* to front and back of regular expression because Java matches to entire string
-					Value = ".*" + Value + ".*";
-					
-					//Regular Expression check
-					if (Pattern.matches(Value,valText) == true) {
-						System.out.println("PASS---'" + valText + "'");
-						System.out.println("Matched as a Regular Expression to:");
-						System.out.println("'" + Value + "'");		
-					}else {
-						System.out.println("Fail---'" + valText + "'");
-						System.out.println("Did not contain Regular Expression:");
-						System.out.println("'" + Value + "'");
-					}		
-
-					break;
 	
-				case "Check":
-					Used to validate information reflected on a web element, checks two ways:     
-					 * in string and exact match
-					 * 			  			  
-					 * Spreadsheet format:
-					 * Run	Action		Location			Value
-					 * y	Check		attribute:value		attribute:value
-					 * y	Check		html id:content		Reject
-					 * Var	N			N:Y				 	Y
-					 
-					//System.out.println("Check Steps");
-					
-					LocatorArray  = Locator.split("#", 2);
-					
-					//Parse locator and value from searchName
-					locator  = LocatorArray[0];
-					locatorVal = LocatorArray[1];
-					
-					//Lookup variable if first position is "^" for locatorVal
-					if (locatorVal.substring(0,1).contentEquals("^")) {
-						//strPart is a variable (starts with "^") so lookup variable and return
-					
-						varName = locatorVal.substring(1, locatorVal.length());
-						
-						locatorVal = LookupVar(varName,varArray,varEnv);
-					}
-					
-					//Set page element based on locator and locatorVal
-					elementVar = FindWebElement(driver, locator, locatorVal);
-					
-					valText = elementVar.getText();
-					
-					//Replace line separators in valText
-					valText = valText.replaceAll("\\r\\n|\\r|\\n", "");
-					//System.out.println(valText);
-					
-					
-					//Lookup variable if first position is "^" for inputString
-					if (Value.substring(0,1).contentEquals("^")) {
-						//strPart is a variable (starts with "^") so lookup variable and return
-					
-						varName = Value.substring(1, Value.length());
-						
-						Value = LookupVar(varName,varArray,varEnv);
-					}
-					
-					if (valText == Value) {
-						System.out.println("PASS---'"+valText + "' was equal to '" + Value+"'");
-					}else if (valText.contains(Value) == true) {
-						System.out.println("PASS---'"+valText + "' contained the string '" + Value+"'");
-					}
-					*/
 					
 				default:
 					System.out.println("Invalid Action!");
@@ -324,7 +149,7 @@ public class Test_Cases extends Generic_Methods {
 				System.out.println(">>>>>>>>>>>>>>>>>>>>> Line number -> " + i + " is completed");
 				sheet.getRow(i).createCell(5).setCellValue("Passed");
 				sheet.getRow(i).getCell(5).setCellStyle(Generic_Methods.passobj(excelbook));
-				
+				//status_flag="Passed";
 				
 			}
 			
@@ -332,6 +157,8 @@ public class Test_Cases extends Generic_Methods {
 			{
 				System.out.println(" Now we are in Exception block.....for FAILED for Line number.." + i);
 				sheet.getRow(i).createCell(5).setCellValue("Failed");
+				status_flag=true;
+				
 				sheet.getRow(i).getCell(5).setCellStyle(Generic_Methods.failobj(excelbook));
 			}
 			
@@ -370,6 +197,11 @@ public class Test_Cases extends Generic_Methods {
 		}
 			
 		return fn_env;
+	}
+	
+	public static String status_check (String flag)
+	{
+		return flag;
 	}
 
 }
